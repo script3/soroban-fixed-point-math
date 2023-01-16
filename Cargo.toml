@@ -1,0 +1,12 @@
+[package]
+name = "fixed-point-math"
+version = "0.0.1"
+description = "Fixed point math support"
+homepage = "https://github.com/mootz12/soroban-copilot/fixed-point-math"
+repository = "https://github.com/mootz12/soroban-copilot/fixed-point-math"
+authors = ["mootz12 <mootz12@pm.me>"]
+readme = "README.md"
+license = "MIT"
+edition = "2021"
+keywords = ["no_std", "wasm"]
+rust-version = "1.66"
