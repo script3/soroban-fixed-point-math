@@ -1,5 +1,5 @@
 # fixed-point-math
-A dependency free fixed-point math library for Rust. Written specifically to be used in [Soroban](https://soroban.stellar.org/) and other WASM based blockchain environments.
+A light fixed-point math library for Rust. Written specifically to be used in [Soroban](https://soroban.stellar.org/) and other WASM based blockchain environments.
 
 ## Safety
 This is **experimental software** and is provided on an "as is" and "as available" basis.

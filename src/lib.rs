@@ -1,3 +1,5 @@
+#![no_std]
+
 pub const STROOP: u64 = 1_0000000;
 
 pub mod i128;

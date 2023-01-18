@@ -1,9 +1,9 @@
 [package]
 name = "fixed-point-math"
-version = "0.0.1"
+version = "0.0.2"
 description = "Fixed point math support"
-homepage = "https://github.com/mootz12/soroban-copilot/fixed-point-math"
-repository = "https://github.com/mootz12/soroban-copilot/fixed-point-math"
+homepage = "https://github.com/mootz12/soroban-copilot/tree/main/fixed-point-math"
+repository = "https://github.com/mootz12/soroban-copilot/tree/main/fixed-point-math"
 authors = ["mootz12 <mootz12@pm.me>"]
 readme = "README.md"
 license = "MIT"
