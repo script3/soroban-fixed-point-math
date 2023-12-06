@@ -1,5 +1,5 @@
-# fixed-point-math
-A light fixed-point math library for Rust. Written specifically to be used in [Soroban](https://soroban.stellar.org/) and other WASM based blockchain environments.
+# soroban-fixed-point-math
+A fixed-point math library for Soroban smart contacts.
 
 ## Safety
 This is **experimental software** and is provided on an "as is" and "as available" basis.
@@ -11,28 +11,48 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-fixed-point-math = "<desired version>"
+soroban_fixed_point_math = "<desired version>"
 ```
 
+### FixedPoint Trait
+
+The `FixedPoint` trait is implemented for the Rust generic integers `i64`, `u64`, `i128`, and `u128`. Any overflow or divide by zero that occurs during the fixed point math calculation will return a value of `None`, in line with Rust's existing checked math functions.
+
+Phantom overflows are errors that result from an overflow during an intermediate calculation, but the expected result would be within bounds. This trait manages this differently for each implemented integer type:
+
+* i64 and u64
+    * In the event of a phantom overflow, the intermediary computation gets scaled to `i128` / `u128` and is retried.
+* i128 and u128
+    * In the event of a phantom overflow, the function will terminate and return `None`. If you need larger numbers to be handled, please use the `SorobanFixedPoint` trait.
+
+### SorobanFixedPoint Trait
+
+The `SorobanFixedPoint` trait is implemented for the Soroban host types `I256` and `U256`. The trait will panic if any `I256` or `U256` arithmetic error occurs, as host function calls panic by default.
+
+Additional implementations of the `SorobanFixedPoint` trait are included for `i128` and `u128` integer types to support larger intermediary computations. This removes the majority of phantom overflow events for 128 bit fixed point math.
+
 ### Examples
-Fixed-point math support is currently added to both `i128` and `u64` types. For any supported number, you can perform fixed-point operations like this:
+For any supported type implementing `FixedPoint`, you can perform fixed-point operations like this:
 
 ```rust
-use fixed_point_math::{STROOP, FixedPoint};
+use soroban_fixed_point_math::FixedPoint;
 
 let x: u64 = 1_5000000;
 let y: u64 = 2_0000000;
-assert_eq!(x.fixed_mul_floor(y, STROOP).unwrap(), 3_0000000);
+assert_eq!(x.fixed_mul_floor(y, 1_0000000).unwrap(), 3_0000000);
 ```
 
-## Overflow
-Overflowing results are handled in the same manner as Rust's built-in "checked" math, by returning `None`.
+For any support type implementing `SorobanFixedPoint`, you can perform fixed-point operations like this:
 
-Fixed-point math also deals with phantom overflows, where an intermediary computation overflows but the expected result would be within bounds. This library manages this differently for each supported type:
-* i128
-    * No extra handling is done. `i128` is large enough to support most computation with 7/9 decimal values. However, its likely 18-decimal math will encounter overflows.
-* u64
-    * The intermediary computation gets scaled to `u128`, and it is attempted again.
+```rust
+use soroban_fixed_point_math::SorobanFixedPoint;
+use soroban_sdk::{Env, I256};
+
+let env: Env //... from your contract, or Env::default() in a test
+let x: I256 = I256::from_i32(&env, 1_5000000);
+let y: I256 = I256::from_i32(&env, 2_0000000);
+assert_eq!(x.fixed_mul_ceil(x, y, I256::from_i32(&env, 1_0000000)), 3_0000000);
+```
 
 ## Acknowledgements
 This library was inspired by or directly modified from many sources, primary:
