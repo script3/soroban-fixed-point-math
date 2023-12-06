@@ -1,3 +1,4 @@
+/// Fixed point trait for computing fixed point calculations with native rust types.
 pub trait FixedPoint: Sized {
     /// Safely calculates floor(x * y / denominator). Returns None if a phantom overflow
     /// occurs or if the denominator is 0.
