@@ -23,7 +23,7 @@ fn mul_div_floor(x: u64, y: u64, z: u64) -> Option<u64> {
     return match x.checked_mul(y) {
         Some(r) => r.checked_div(z),
         None => {
-            let res_u128 = (x as u128).checked_mul(y as u128)?.checked_div(z as u128)?;
+            let res_u128 = crate::u128::mul_div_floor(x as u128, y as u128, z as u128)?;
             if res_u128 > u64::MAX as u128 {
                 return None;
             }
@@ -41,14 +41,11 @@ fn mul_div_ceil(x: u64, y: u64, z: u64) -> Option<u64> {
             (r / z).checked_add(if remainder > 0 { 1 } else { 0 })
         }
         None => {
-            // TODO: safe cast
-            let r_u128 = (x as u128).checked_mul(y as u128)?;
-            let remainder = r_u128.checked_rem_euclid(z as u128)?;
-            let res_u128 = r_u128 / (z as u128);
+            let res_u128 = crate::u128::mul_div_ceil(x as u128, y as u128, z as u128)?;
             if res_u128 > u64::MAX as u128 {
                 return None;
             }
-            (res_u128 as u64).checked_add(if remainder > 0 { 1 } else { 0 })
+            Some(res_u128 as u64)
         }
     };
 }
