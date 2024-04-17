@@ -3,28 +3,28 @@ use soroban_sdk::{Env, I256};
 use crate::soroban_fixed_point::SorobanFixedPoint;
 
 impl SorobanFixedPoint for I256 {
-    fn fixed_mul_floor(self, env: &Env, y: I256, denominator: I256) -> I256 {
-        mul_div_floor(env, self, y, denominator)
+    fn fixed_mul_floor(&self, env: &Env, y: &I256, denominator: &I256) -> I256 {
+        mul_div_floor(env, &self, y, denominator)
     }
 
-    fn fixed_mul_ceil(self, env: &Env, y: I256, denominator: I256) -> I256 {
-        mul_div_ceil(env, self, y, denominator)
+    fn fixed_mul_ceil(&self, env: &Env, y: &I256, denominator: &I256) -> I256 {
+        mul_div_ceil(env, &self, y, denominator)
     }
 
-    fn fixed_div_floor(self, env: &Env, y: I256, denominator: I256) -> I256 {
-        mul_div_floor(env, self, denominator, y)
+    fn fixed_div_floor(&self, env: &Env, y: &I256, denominator: &I256) -> I256 {
+        mul_div_floor(env, &self, denominator, y)
     }
 
-    fn fixed_div_ceil(self, env: &Env, y: I256, denominator: I256) -> I256 {
-        mul_div_ceil(env, self, denominator, y)
+    fn fixed_div_ceil(&self, env: &Env, y: &I256, denominator: &I256) -> I256 {
+        mul_div_ceil(env, &self, denominator, y)
     }
 }
 
 /// Performs floor(x * y / z)
-pub(crate) fn mul_div_floor(env: &Env, x: I256, y: I256, z: I256) -> I256 {
+pub(crate) fn mul_div_floor(env: &Env, x: &I256, y: &I256, z: &I256) -> I256 {
     let zero = I256::from_i32(env, 0);
     let r = x.mul(&y);
-    if r < zero || (r > zero && z < zero) {
+    if r < zero || (r > zero && z.clone() < zero) {
         // ceiling is taken by default for a negative result
         let remainder = r.rem_euclid(&z);
         let one = I256::from_i32(env, 1);
@@ -36,10 +36,10 @@ pub(crate) fn mul_div_floor(env: &Env, x: I256, y: I256, z: I256) -> I256 {
 }
 
 /// Performs ceil(x * y / z)
-pub(crate) fn mul_div_ceil(env: &Env, x: I256, y: I256, z: I256) -> I256 {
+pub(crate) fn mul_div_ceil(env: &Env, x: &I256, y: &I256, z: &I256) -> I256 {
     let zero = I256::from_i32(env, 0);
     let r = x.mul(&y);
-    if r <= zero || (r > zero && z < zero) {
+    if r <= zero || (r > zero && z.clone() < zero) {
         // ceiling is taken by default for a negative or zero result
         r.div(&z)
     } else {
@@ -63,7 +63,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, 314_1592653);
         let denominator: I256 = I256::from_i128(&env, 1_0000001);
 
-        let result = x.fixed_mul_floor(&env, y, denominator);
+        let result = x.fixed_mul_floor(&env, &y, &denominator);
 
         assert_eq!(result, I256::from_i128(&env, 483_5313675));
     }
@@ -75,7 +75,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, 314_1592653);
         let denominator: I256 = I256::from_i128(&env, 1_0000001);
 
-        let result = x.fixed_mul_floor(&env, y, denominator);
+        let result = x.fixed_mul_floor(&env, &y, &denominator);
 
         assert_eq!(result, I256::from_i128(&env, -483_5313676));
     }
@@ -87,7 +87,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, 10i128.pow(38));
         let denominator: I256 = I256::from_i128(&env, 10i128.pow(18));
 
-        let result = x.clone().fixed_mul_floor(&env, y, denominator);
+        let result = x.clone().fixed_mul_floor(&env, &y, &denominator);
 
         let expected_result = x.mul(&I256::from_i128(&env, 10i128.pow(20)));
         assert_eq!(result, expected_result);
@@ -102,7 +102,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, 10i128.pow(39));
         let denominator: I256 = I256::from_i128(&env, 10i128.pow(18));
 
-        x.fixed_mul_floor(&env, y, denominator);
+        x.fixed_mul_floor(&env, &y, &denominator);
     }
 
     /********** fixed_mul_ceil **********/
@@ -114,7 +114,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, 314_1592653);
         let denominator: I256 = I256::from_i128(&env, 1_0000001);
 
-        let result = x.fixed_mul_ceil(&env, y, denominator);
+        let result = x.fixed_mul_ceil(&env, &y, &denominator);
 
         assert_eq!(result, I256::from_i128(&env, 483_5313676));
     }
@@ -126,7 +126,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, 314_1592653);
         let denominator: I256 = I256::from_i128(&env, 1_0000001);
 
-        let result = x.fixed_mul_ceil(&env, y, denominator);
+        let result = x.fixed_mul_ceil(&env, &y, &denominator);
 
         assert_eq!(result, I256::from_i128(&env, -483_5313675));
     }
@@ -138,7 +138,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, 10i128.pow(38));
         let denominator: I256 = I256::from_i128(&env, 10i128.pow(18));
 
-        let result = x.clone().fixed_mul_ceil(&env, y, denominator);
+        let result = x.clone().fixed_mul_ceil(&env, &y, &denominator);
 
         let expected_result = x.mul(&I256::from_i128(&env, 10i128.pow(20)));
         assert_eq!(result, expected_result);
@@ -153,7 +153,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, 10i128.pow(39));
         let denominator: I256 = I256::from_i128(&env, 10i128.pow(18));
 
-        x.fixed_mul_ceil(&env, y, denominator);
+        x.fixed_mul_ceil(&env, &y, &denominator);
     }
 
     /********** fixed_div_floor **********/
@@ -165,7 +165,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, 1_5391280);
         let denominator: I256 = I256::from_i128(&env, 1_0000000);
 
-        let result = x.fixed_div_floor(&env, y, denominator);
+        let result = x.fixed_div_floor(&env, &y, &denominator);
 
         assert_eq!(result, I256::from_i128(&env, 204_1150997));
     }
@@ -177,7 +177,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, -1_5391280);
         let denominator: I256 = I256::from_i128(&env, 1_0000000);
 
-        let result = x.fixed_div_floor(&env, y, denominator);
+        let result = x.fixed_div_floor(&env, &y, &denominator);
 
         assert_eq!(result, I256::from_i128(&env, -204_1150998));
     }
@@ -189,7 +189,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, 10i128.pow(27));
         let denominator: I256 = I256::from_i128(&env, 10i128.pow(38));
 
-        let result = x.clone().fixed_div_floor(&env, y, denominator);
+        let result = x.clone().fixed_div_floor(&env, &y, &denominator);
 
         let expected_result = x.mul(&I256::from_i128(&env, 10i128.pow(11)));
         assert_eq!(result, expected_result);
@@ -204,7 +204,7 @@ mod tests {
         // 256 bit max ~= 5.8e76, 128 bit max ~= 1.7e38, need to multiply by at least 10^39
         let denominator: I256 = I256::from_i128(&env, 10i128.pow(39));
 
-        x.fixed_div_floor(&env, y, denominator);
+        x.fixed_div_floor(&env, &y, &denominator);
     }
 
     /********** fixed_div_ceil **********/
@@ -216,7 +216,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, 1_5391280);
         let denominator: I256 = I256::from_i128(&env, 1_0000000);
 
-        let result = x.fixed_div_ceil(&env, y, denominator);
+        let result = x.fixed_div_ceil(&env, &y, &denominator);
 
         assert_eq!(result, I256::from_i128(&env, 204_1150998));
     }
@@ -228,7 +228,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, -1_5391280);
         let denominator: I256 = I256::from_i128(&env, 1_0000000);
 
-        let result = x.fixed_div_ceil(&env, y, denominator);
+        let result = x.fixed_div_ceil(&env, &y, &denominator);
 
         assert_eq!(result, I256::from_i128(&env, -204_1150997));
     }
@@ -240,7 +240,7 @@ mod tests {
         let y: I256 = I256::from_i128(&env, 10i128.pow(27));
         let denominator: I256 = I256::from_i128(&env, 10i128.pow(38));
 
-        let result = x.clone().fixed_div_ceil(&env, y, denominator);
+        let result = x.clone().fixed_div_ceil(&env, &y, &denominator);
 
         let expected_result = x.mul(&I256::from_i128(&env, 10i128.pow(11)));
         assert_eq!(result, expected_result);
@@ -255,6 +255,6 @@ mod tests {
         // 256 bit max ~= 5.8e76, 128 bit max ~= 1.7e38, need to multiply by at least 10^39
         let denominator: I256 = I256::from_i128(&env, 10i128.pow(39));
 
-        x.fixed_div_ceil(&env, y, denominator);
+        x.fixed_div_ceil(&env, &y, &denominator);
     }
 }

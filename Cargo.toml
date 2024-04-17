@@ -1,6 +1,6 @@
 [package]
 name = "soroban-fixed-point-math"
-version = "1.0.0"
+version = "1.1.0"
 description = "Fixed point math support for Soroban smart contracts"
 homepage = "https://github.com/script3/soroban-fixed-point-math"
 repository = "https://github.com/script3/soroban-fixed-point-math"
@@ -12,4 +12,4 @@ keywords = ["no_std", "wasm"]
 rust-version = "1.74"
 
 [dependencies]
-soroban-sdk = { version = "20.0.0" }
+soroban-sdk = { version = "20.5.0" }
