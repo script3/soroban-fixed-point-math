@@ -57,34 +57,34 @@ fn div_ceil(r: i128, z: i128) -> Option<i128> {
 }
 
 impl SorobanFixedPoint for i128 {
-    fn fixed_mul_floor(self, env: &Env, y: i128, denominator: i128) -> i128 {
-        scaled_mul_div_floor(self, env, y, denominator)
+    fn fixed_mul_floor(&self, env: &Env, y: &i128, denominator: &i128) -> i128 {
+        scaled_mul_div_floor(&self, env, y, denominator)
     }
 
-    fn fixed_mul_ceil(self, env: &Env, y: i128, denominator: i128) -> i128 {
-        scaled_mul_div_ceil(self, env, y, denominator)
+    fn fixed_mul_ceil(&self, env: &Env, y: &i128, denominator: &i128) -> i128 {
+        scaled_mul_div_ceil(&self, env, y, denominator)
     }
 
-    fn fixed_div_floor(self, env: &Env, y: i128, denominator: i128) -> i128 {
-        scaled_mul_div_floor(self, env, denominator, y)
+    fn fixed_div_floor(&self, env: &Env, y: &i128, denominator: &i128) -> i128 {
+        scaled_mul_div_floor(&self, env, denominator, y)
     }
 
-    fn fixed_div_ceil(self, env: &Env, y: i128, denominator: i128) -> i128 {
-        scaled_mul_div_ceil(self, env, denominator, y)
+    fn fixed_div_ceil(&self, env: &Env, y: &i128, denominator: &i128) -> i128 {
+        scaled_mul_div_ceil(&self, env, denominator, y)
     }
 }
 
 /// Performs floor(x * y / z)
-fn scaled_mul_div_floor(x: i128, env: &Env, y: i128, z: i128) -> i128 {
-    return match x.checked_mul(y) {
-        Some(r) => div_floor(r, z).unwrap_optimized(),
+fn scaled_mul_div_floor(x: &i128, env: &Env, y: &i128, z: &i128) -> i128 {
+    return match x.checked_mul(*y) {
+        Some(r) => div_floor(r, *z).unwrap_optimized(),
         None => {
             // scale to i256 and retry
             let res = crate::i256::mul_div_floor(
                 &env,
-                I256::from_i128(&env, x),
-                I256::from_i128(&env, y),
-                I256::from_i128(&env, z),
+                &I256::from_i128(&env, *x),
+                &I256::from_i128(&env, *y),
+                &I256::from_i128(&env, *z),
             );
             // will panic if result is not representable in i128
             res.to_i128().unwrap_optimized()
@@ -93,16 +93,16 @@ fn scaled_mul_div_floor(x: i128, env: &Env, y: i128, z: i128) -> i128 {
 }
 
 /// Performs floor(x * y / z)
-fn scaled_mul_div_ceil(x: i128, env: &Env, y: i128, z: i128) -> i128 {
-    return match x.checked_mul(y) {
-        Some(r) => div_ceil(r, z).unwrap_optimized(),
+fn scaled_mul_div_ceil(x: &i128, env: &Env, y: &i128, z: &i128) -> i128 {
+    return match x.checked_mul(*y) {
+        Some(r) => div_ceil(r, *z).unwrap_optimized(),
         None => {
             // scale to i256 and retry
             let res = crate::i256::mul_div_ceil(
                 &env,
-                I256::from_i128(&env, x),
-                I256::from_i128(&env, y),
-                I256::from_i128(&env, z),
+                &I256::from_i128(&env, *x),
+                &I256::from_i128(&env, *y),
+                &I256::from_i128(&env, *z),
             );
             // will panic if result is not representable in i128
             res.to_i128().unwrap_optimized()
@@ -314,7 +314,7 @@ mod test_soroban_fixed_point {
         let y: i128 = 314_1592653;
         let denominator: i128 = 1_0000001;
 
-        let result = x.fixed_mul_floor(&env, y, denominator);
+        let result = x.fixed_mul_floor(&env, &y, &denominator);
 
         assert_eq!(result, 483_5313675)
     }
@@ -326,7 +326,7 @@ mod test_soroban_fixed_point {
         let y: i128 = 314_1592653;
         let denominator: i128 = 1_0000001;
 
-        let result = x.fixed_mul_floor(&env, y, denominator);
+        let result = x.fixed_mul_floor(&env, &y, &denominator);
 
         assert_eq!(result, -483_5313676)
     }
@@ -338,7 +338,7 @@ mod test_soroban_fixed_point {
         let y: i128 = 10i128.pow(27);
         let denominator: i128 = 10i128.pow(18);
 
-        let result = x.fixed_mul_floor(&env, y, denominator);
+        let result = x.fixed_mul_floor(&env, &y, &denominator);
 
         assert_eq!(result, 170_141_183_460_469_231_731 * 10i128.pow(9));
     }
@@ -352,7 +352,7 @@ mod test_soroban_fixed_point {
         let y: i128 = 314_1592653;
         let denominator: i128 = 1_0000001;
 
-        let result = x.fixed_mul_ceil(&env, y, denominator);
+        let result = x.fixed_mul_ceil(&env, &y, &denominator);
 
         assert_eq!(result, 483_5313676)
     }
@@ -364,7 +364,7 @@ mod test_soroban_fixed_point {
         let y: i128 = 314_1592653;
         let denominator: i128 = 1_0000001;
 
-        let result = x.fixed_mul_ceil(&env, y, denominator);
+        let result = x.fixed_mul_ceil(&env, &y, &denominator);
 
         assert_eq!(result, -483_5313675)
     }
@@ -376,7 +376,7 @@ mod test_soroban_fixed_point {
         let y: i128 = 1_000_000_000_000_000_000;
         let denominator: i128 = 1_000_000_000_000_000_000;
 
-        let result = x.fixed_mul_ceil(&env, y, denominator);
+        let result = x.fixed_mul_ceil(&env, &y, &denominator);
 
         assert_eq!(result, 170_141_183_460_469_231_731)
     }
@@ -388,7 +388,7 @@ mod test_soroban_fixed_point {
         let y: i128 = 10i128.pow(27);
         let denominator: i128 = 10i128.pow(18);
 
-        let result = x.fixed_mul_ceil(&env, y, denominator);
+        let result = x.fixed_mul_ceil(&env, &y, &denominator);
 
         assert_eq!(result, 170_141_183_460_469_231_731 * 10i128.pow(9));
     }
@@ -402,7 +402,7 @@ mod test_soroban_fixed_point {
         let y: i128 = 1_5391280;
         let denominator: i128 = 1_0000000;
 
-        let result = x.fixed_div_floor(&env, y, denominator);
+        let result = x.fixed_div_floor(&env, &y, &denominator);
 
         assert_eq!(result, 204_1150997)
     }
@@ -414,7 +414,7 @@ mod test_soroban_fixed_point {
         let y: i128 = -1_5391280;
         let denominator: i128 = 1_0000000;
 
-        let result = x.fixed_div_floor(&env, y, denominator);
+        let result = x.fixed_div_floor(&env, &y, &denominator);
 
         assert_eq!(result, -204_1150998)
     }
@@ -426,7 +426,7 @@ mod test_soroban_fixed_point {
         let y: i128 = 10i128.pow(18);
         let denominator: i128 = 10i128.pow(27);
 
-        let result = x.fixed_div_floor(&env, y, denominator);
+        let result = x.fixed_div_floor(&env, &y, &denominator);
 
         assert_eq!(result, 170_141_183_460_469_231_731 * 10i128.pow(9));
     }
@@ -440,7 +440,7 @@ mod test_soroban_fixed_point {
         let y: i128 = 1_5391280;
         let denominator: i128 = 1_0000000;
 
-        let result = x.fixed_div_ceil(&env, y, denominator);
+        let result = x.fixed_div_ceil(&env, &y, &denominator);
 
         assert_eq!(result, 204_1150998)
     }
@@ -452,7 +452,7 @@ mod test_soroban_fixed_point {
         let y: i128 = -1_5391280;
         let denominator: i128 = 1_0000000;
 
-        let result = x.fixed_div_ceil(&env, y, denominator);
+        let result = x.fixed_div_ceil(&env, &y, &denominator);
 
         assert_eq!(result, -204_1150997)
     }
@@ -464,7 +464,7 @@ mod test_soroban_fixed_point {
         let y: i128 = 1_000_000_000_000_000_000;
         let denominator: i128 = 1_000_000_000_000_000_000;
 
-        let result = x.fixed_div_ceil(&env, y, denominator);
+        let result = x.fixed_div_ceil(&env, &y, &denominator);
 
         assert_eq!(result, 170_141_183_460_469_231_731)
     }
@@ -476,7 +476,7 @@ mod test_soroban_fixed_point {
         let y: i128 = 10i128.pow(18);
         let denominator: i128 = 10i128.pow(27);
 
-        let result = x.fixed_div_floor(&env, y, denominator);
+        let result = x.fixed_div_floor(&env, &y, &denominator);
 
         assert_eq!(result, 170_141_183_460_469_231_731 * 10i128.pow(9));
     }

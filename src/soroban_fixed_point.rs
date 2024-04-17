@@ -12,26 +12,26 @@ pub trait SorobanFixedPoint: Sized {
     /// ### Panics
     /// This method will panic if the denominator is 0, a phantom overflow occurs, or
     /// the result does not fit in Self.
-    fn fixed_mul_floor(self, env: &Env, y: Self, denominator: Self) -> Self;
+    fn fixed_mul_floor(&self, env: &Env, y: &Self, denominator: &Self) -> Self;
 
     /// Safely calculates ceil(x * y / denominator).
     ///
     /// ### Panics
     /// This method will panic if the denominator is 0, a phantom overflow occurs, or
     /// the result does not fit in Self.
-    fn fixed_mul_ceil(self, env: &Env, y: Self, denominator: Self) -> Self;
+    fn fixed_mul_ceil(&self, env: &Env, y: &Self, denominator: &Self) -> Self;
 
     /// Safely calculates floor(x * denominator / y).
     ///
     /// ### Panics
     /// This method will panic if the denominator is 0, a phantom overflow occurs, or
     /// the result does not fit in Self.
-    fn fixed_div_floor(self, env: &Env, y: Self, denominator: Self) -> Self;
+    fn fixed_div_floor(&self, env: &Env, y: &Self, denominator: &Self) -> Self;
 
     /// Safely calculates ceil(x * denominator / y).
     ///
     /// ### Panics
     /// This method will panic if the denominator is 0, a phantom overflow occurs, or
     /// the result does not fit in Self.
-    fn fixed_div_ceil(self, env: &Env, y: Self, denominator: Self) -> Self;
+    fn fixed_div_ceil(&self, env: &Env, y: &Self, denominator: &Self) -> Self;
 }

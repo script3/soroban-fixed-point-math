@@ -51,7 +51,7 @@ use soroban_sdk::{Env, I256};
 let env: Env //... from your contract, or Env::default() in a test
 let x: I256 = I256::from_i32(&env, 1_5000000);
 let y: I256 = I256::from_i32(&env, 2_0000000);
-assert_eq!(x.fixed_mul_ceil(x, y, I256::from_i32(&env, 1_0000000)), 3_0000000);
+assert_eq!(x.fixed_mul_ceil(&x, &y, I256::from_i32(&env, 1_0000000)), 3_0000000);
 ```
 
 ## Acknowledgements
