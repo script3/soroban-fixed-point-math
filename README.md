@@ -1,5 +1,8 @@
 # soroban-fixed-point-math
-A fixed-point math library for Soroban smart contacts.
+
+[![Crates.io](https://img.shields.io/crates/v/soroban-fixed-point-math.svg)](https://crates.io/crates/soroban-fixed-point-math)
+
+A fixed-point math library for [Soroban](https://stellar.org/soroban) smart contacts.
 
 ## Safety
 This is **experimental software** and is provided on an "as is" and "as available" basis.
@@ -11,7 +14,13 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-soroban_fixed_point_math = "<desired version>"
+soroban-fixed-point-math = "<desired version>"
+```
+
+Or install via `cargo`:
+
+```bash
+cargo add soroban-fixed-point-math
 ```
 
 ### FixedPoint Trait
@@ -60,10 +69,12 @@ This library was inspired by or directly modified from many sources, primary:
 - [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
 
 ## WASM
-The WASM target `wasm32-unknown-unknown` is supported.
+The following WASM targets are supported:
+- `wasm32-unknown-unknown`
+- `wasm32v1-none`
 
 ## Contributions
-Contributions are welcome. Please check out the contribution guide (TODO)!
+Contributions are welcome. Please check out the contribution guide in [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## License
 This library is released under the [MIT License](../LICENSE).
