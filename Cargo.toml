@@ -12,4 +12,4 @@ keywords = ["no_std", "wasm"]
 rust-version = "1.89"
 
 [dependencies]
-soroban-sdk = { version = "23" }
+soroban-sdk = { version = "22" }
