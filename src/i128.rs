@@ -30,7 +30,7 @@ pub(crate) fn mul_div_floor(x: i128, y: i128, z: i128) -> Option<i128> {
 fn div_floor(r: i128, z: i128) -> Option<i128> {
     if (r < 0 && z > 0) || (r > 0 && z < 0) {
         // ceiling is taken by default for a negative result
-        // if there is any remainder, add 1 to round floor
+        // if there is any remainder, sub 1 to round floor
         let remainder = r.checked_rem_euclid(z)?;
         r.checked_div(z)?
             .checked_sub(if remainder > 0 { 1 } else { 0 })
