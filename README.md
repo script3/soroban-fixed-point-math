@@ -60,7 +60,7 @@ This library was inspired by or directly modified from many sources, primary:
 - [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
 
 ## WASM
-The WASM target `wasm32-unknown-unknown` is supported.
+The WASM target `wasm32v1-none` is supported.
 
 ## Contributions
 Contributions are welcome. Please check out the contribution guide (TODO)!
