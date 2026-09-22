@@ -60,7 +60,7 @@ This library was inspired by or directly modified from many sources, primary:
 - [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts)
 
 ## WASM
-The WASM target `wasm32-unknown-unknown` is supported.
+Use the `wasm32v1-none` target. Contracts using this library with Soroban SDK 28 must be built with `stellar contract build` using Stellar CLI 25.2.0 or later.
 
 ## Contributions
 Contributions are welcome. Please check out the contribution guide (TODO)!
